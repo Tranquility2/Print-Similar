@@ -26,7 +26,7 @@ logging.basicConfig(level=logging.DEBUG,
 class FancyDictionary:
     def __init__(self, path, logger):
         """
-        :param str path: path of DB (English dictionary)
+        :param str path: path of source dictionary
         """
         self.logger = logger
         self._data = self._load_data_file(path)
@@ -54,8 +54,8 @@ class FancyDictionary:
 
     def _load_data_file(self, path):
         """
-        Load a txt file to a local dictionary DB
-        :param str path: path of DB (English dictionary)
+        Load a dictionary txt file
+        :param str path: path of data source
         """
         start_time = datetime.datetime.now()
         data = defaultdict(list)
