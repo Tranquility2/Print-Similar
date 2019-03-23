@@ -16,78 +16,66 @@ import logging
 
 from flask import Flask, request
 
+# noinspection SpellCheckingInspection
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                     datefmt='%H:%M:%S',
-                    handlers=[logging.StreamHandler(sys.stdout)]
-                    )
-
-log = logging.getLogger(__name__)
-
-app = Flask(__name__)
-
-BASE_URL = "/api/"
-VERSION_URL = BASE_URL + 'v1/'
-PING_URL = VERSION_URL + 'ping'
-SIMILAR_URL = VERSION_URL + 'similar'
-STATS_URL = VERSION_URL + 'stats'
-
-DataBase = dict()
+                    handlers=[logging.StreamHandler(sys.stdout)])
 
 
-@app.route(PING_URL, methods=['GET'])
-def get_test():
-    return "pong"
+class FancyDictionary:
+    def __init__(self, path, logger):
+        """
+        :param str path: path of DB (English dictionary)
+        """
+        self.logger = logger
+        self._data = self._load_data_file(path)
 
+    @staticmethod
+    def _sort_word(word):
+        """
+        Used to return a sorted string based on a given word
+        :param str word:
+        :rtype: str
+        """
+        return "".join((sorted(word)))
 
-@app.route(SIMILAR_URL, methods=['GET'])
-def get_similar():
-    global DataBase
+    def check(self, word):
+        """
+        Fetch a word from the DB
+        :param str word:
+        :rtype: list[str]
+        """
+        search_item = self._sort_word(word)
+        result = self._data[search_item].copy()
+        result.remove(word)
 
-    requested_word = request.args.get('word')
-    result = DataBase[_sort_word(requested_word)]
-    result.remove(requested_word)
+        return result
 
-    return json.dumps(result)
+    def _load_data_file(self, path):
+        """
+        Load a txt file to a local dictionary DB
+        :param str path: path of DB (English dictionary)
+        """
+        start_time = datetime.datetime.now()
+        data = defaultdict(list)
+        words = 0
 
+        with open(path, "r") as fileHandler:
+            for line in fileHandler:
+                words += 1
+                word = line.strip()  # Need to stripe as each line (except last one) will contain new line character
+                sorted_word = self._sort_word(word)  # get the sorted version of the word
+                data[sorted_word] += [word]  # Insert the data to the DB
 
-@app.route(STATS_URL, methods=['GET'])
-def get_stats():
-    return "stats"
+        end_time = datetime.datetime.now()
 
+        self.logger.info(f"DB loaded successfully (load time = {(end_time - start_time).total_seconds()} seconds)")
+        self.logger.debug(f"Words count = {words}, "
+                          f"DB Keys = {len(data.keys())}, "
+                          f"DB Values = {sum([len(data[x]) for x in data if isinstance(data[x], list)])}")
 
-def _sort_word(word):
-    """
-    Used to return a sorted string based on a given word
-    :param str word:
-    :rtype: str
-    """
-    return "".join((sorted(word)))
-
-
-def load_data_file(path):
-    """
-    :param str path: path of DB (English dictionary)
-    """
-    global DataBase
-    start_time = datetime.datetime.now()
-    loaded_db = defaultdict(list)
-    words = 0
-
-    with open(path, "r") as fileHandler:
-        for line in fileHandler:
-            words += 1
-            word = line.strip()  # Need to stripe as each line (except last one) will contain new line character
-            sorted_word = _sort_word(word)  # get the sorted version of the word
-            loaded_db[sorted_word] += [word]  # Insert the data to the DB
-
-    DataBase = loaded_db
-
-    end_time = datetime.datetime.now()
-    log.info(f"DB loaded successfully (load time = {(end_time - start_time).total_seconds()} seconds)")
-    log.debug(f"Words count = {words}, "
-              f"DB Keys = {len(loaded_db.keys())}, "
-              f"DB Values = {sum([len(loaded_db[x]) for x in loaded_db if isinstance(loaded_db[x], list)])}")
+        return data
 
 
 if __name__ == '__main__':
@@ -98,6 +86,34 @@ if __name__ == '__main__':
     parser.add_argument("-f", "--file", action="store", type=str, default="words_clean.txt", help="source data file")
     args = parser.parse_args()
 
-    load_data_file(args.file)
+    log = logging.getLogger(__name__)
+
+    DB = FancyDictionary(args.file, log)
+
+    app = Flask(__name__)
+
+    BASE_URL = "/api/"
+    VERSION_URL = BASE_URL + 'v1/'
+    PING_URL = VERSION_URL + 'ping'
+    SIMILAR_URL = VERSION_URL + 'similar'
+    STATS_URL = VERSION_URL + 'stats'
+
+
+    @app.route(PING_URL, methods=['GET'])
+    def get_test():
+        return "pong"
+
+
+    @app.route(SIMILAR_URL, methods=['GET'])
+    def get_similar():
+        requested_word = request.args.get('word')
+        found = DB.check(requested_word)
+
+        return json.dumps(found)
+
+
+    @app.route(STATS_URL, methods=['GET'])
+    def get_stats():
+        return "stats"
 
     app.run(debug=args.debug, host=args.host, port=args.port)
