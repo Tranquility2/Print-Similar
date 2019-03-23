@@ -12,7 +12,7 @@ The web service listen on port 8000 and support the following two HTTP endpoints
 
 ### similar 
 GET /api/v1/similar?word=stressed  
-Returns all words in the dictionary that has the same permutation as the word "stressed". 
+Returns all words in the dictionary that has the same permutation as the word "stressed".  
 The word in the query should not be returned. 
 
 The result format is a JSON object as follows:
