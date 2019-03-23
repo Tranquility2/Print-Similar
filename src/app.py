@@ -5,6 +5,7 @@ A small web service for printing similar words in the English language.
 import datetime
 import json
 import sys
+import time
 from collections import defaultdict
 
 __author__ = "Roy Moore"
@@ -14,7 +15,7 @@ __version__ = "1.0.0"
 import argparse
 import logging
 
-from flask import Flask, request
+from flask import Flask, request, g
 
 # noinspection SpellCheckingInspection
 logging.basicConfig(level=logging.DEBUG,
@@ -57,7 +58,7 @@ class FancyDictionary:
         Load a dictionary txt file
         :param str path: path of data source
         """
-        start_time = datetime.datetime.now()
+        start_time = time.time()
         data = defaultdict(list)
         words = 0
 
@@ -68,9 +69,9 @@ class FancyDictionary:
                 sorted_word = self._sort_word(word)  # get the sorted version of the word
                 data[sorted_word] += [word]  # Insert the data to the DB
 
-        end_time = datetime.datetime.now()
+        end_time = time.time()
 
-        self.logger.info(f"DB loaded successfully (load time = {(end_time - start_time).total_seconds()} seconds)")
+        self.logger.info("DB loaded successfully (loaded in %.5fs)", end_time - start_time)
         self.logger.debug(f"Words count = {words}, "
                           f"DB Keys = {len(data.keys())}, "
                           f"DB Values = {sum([len(data[x]) for x in data if isinstance(data[x], list)])}")
@@ -99,6 +100,12 @@ if __name__ == '__main__':
     STATS_URL = VERSION_URL + 'stats'
 
 
+    @app.before_request
+    def before_request():
+        g.request_start_time = time.time()
+        g.request_time = lambda: "%.5fs" % (time.time() - g.request_start_time)
+
+
     @app.route(PING_URL, methods=['GET'])
     def get_test():
         return "pong"
@@ -108,8 +115,10 @@ if __name__ == '__main__':
     def get_similar():
         requested_word = request.args.get('word')
         found = DB.check(requested_word)
+        found_json = json.dumps(found)
+        log.debug(f"request time {g.request_time()}")
 
-        return json.dumps(found)
+        return found_json
 
 
     @app.route(STATS_URL, methods=['GET'])
