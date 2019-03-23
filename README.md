@@ -4,7 +4,7 @@ A small web service for printing similar words in the English language.
 Two words w_1 and w_2 are considered similar if w_1 is a letter permutation of w_2 (e.g., "stressed" and "desserts"). 
 
 ## DB
-A DB of the English dictionary should be provided.
+A DB of the English dictionary should be provided.  
 The service expects the DB (the txt file) to be in the local directory with the same name. 
 
 ## Web service API
