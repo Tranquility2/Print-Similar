@@ -86,12 +86,10 @@ class StreamingMovingAverage:
         self.sum = 0
 
     def process(self, value):
-        print(value)
         self.values.append(value)
         self.sum += value
         if len(self.values) > self.window_size:
             self.sum -= self.values.pop(0)
-        print(float(self.sum), len(self.values))
         return int(float(self.sum) / len(self.values))
 
 
