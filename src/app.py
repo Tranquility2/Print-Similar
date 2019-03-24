@@ -107,21 +107,33 @@ if __name__ == '__main__':
 
     @app.route(PING_URL, methods=['GET'])
     def get_test():
+        """
+        Test the server
+        """
         return "pong"
 
 
     @app.route(SIMILAR_URL, methods=['GET'])
     def get_similar():
+        """
+        Returns all words in the dictionary that has the same permutation as the word
+        :rtype: str
+        """
         requested_word = request.args.get('word')
-        found = DB.check(requested_word)
-        found_json = json.dumps(found)
+        result_dict = dict()
+        result_dict['similar'] = DB.check(requested_word)  # TODO: change to result object?
+        result_json = json.dumps(result_dict)
         log.debug(f"request time {g.request_time()}")
 
-        return found_json
+        return result_json
 
 
     @app.route(STATS_URL, methods=['GET'])
     def get_stats():
+        """
+        Return general statistics
+        :rtype: str
+        """
         return "stats"
 
     app.run(debug=args.debug, host=args.host, port=args.port)
