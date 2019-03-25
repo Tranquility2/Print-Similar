@@ -6,7 +6,6 @@ from dataclasses_json import dataclass_json
 from quart import Quart, request, g, jsonify
 
 from src.data import FancyDictionary
-from src.utils import StreamingMovingAverage
 
 logging.getLogger()
 
@@ -36,10 +35,13 @@ class Server:
         self.logger = logger
         self.db = FancyDictionary(file, logger)
         self.stat_info = StatInfo(totalWords=self.db.total_words)
-        self.avg_time_calc = StreamingMovingAverage(window_size=self.SAMPLE_WINDOW_SIZE)
 
     def run(self):
         app = Quart(__name__)
+        # Moving average parameters
+        app.window_size = self.SAMPLE_WINDOW_SIZE
+        app.values = []
+        app.sum = 0
 
         @app.before_request
         async def before_request():
@@ -62,13 +64,24 @@ class Server:
             Returns all words in the dictionary that has the same permutation as the word
             :rtype: str
             """
+            async def update(value):
+                """
+                Store a given value for calculation
+                :param int value:
+                """
+                app.values.append(value)
+                app.sum += value
+                if len(app.values) > app.window_size:
+                    app.sum -= app.values.pop(0)
+
+            result_dict = dict()
             self.stat_info.totalRequests += 1
             requested_word = request.args.get('word')
-            result_dict = dict()
-            result_dict['similar'] = await self.db.check(requested_word)  # Note: changing to object degrades performance x6
+            # Note: changing to check object degrades performance x6
+            result_dict['similar'] = await self.db.check(requested_word)
             request_time = int(g.request_time())
             logging.debug(f"request time {request_time}ns")
-            self.stat_info.avgProcessingTimeNs = await self.avg_time_calc.update(request_time)
+            self.stat_info.avgProcessingTimeNs = await update(request_time)
 
             return jsonify(result_dict)
 
@@ -78,7 +91,7 @@ class Server:
             Return general statistics
             :rtype: str
             """
-            self.stat_info.avgProcessingTimeNs = self.avg_time_calc.calculate()
+            self.stat_info.avgProcessingTimeNs = int(float(app.sum) / len(app.values))  # calculate average
 
             return self.stat_info.to_json()
 
