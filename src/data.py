@@ -35,14 +35,13 @@ class FancyDictionary:
         """
         Fetch a word from the DB
         :param str word:
-        :rtype: SimilarResult
+        :rtype: list[str]
         """
         search_item = self._sort_word(word)
         result = self._data[search_item].copy()
         result.remove(word)
-        similar_result = SimilarResult(similar=result)
 
-        return similar_result
+        return result
 
     def _load_data_file(self, path):
         """

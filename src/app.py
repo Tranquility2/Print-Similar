@@ -68,10 +68,12 @@ class Server:
             """
             self.stat_info.totalRequests += 1
             requested_word = request.args.get('word')
-            result_json = self.db.check(requested_word).to_json()  # TODO: change to result object?
+            result_dict = dict()
+            result_dict['similar'] = self.db.check(requested_word)  # Note: changing to object degrades performance x6
+            result_json = json.dumps(result_dict)
             request_time = int(g.request_time())
             logging.debug(f"request time {request_time}ns")
-            self.stat_info.avgProcessingTimeNs = self.avg_time_calc.process(request_time)  # Update average time
+            self.stat_info.avgProcessingTimeNs = self.avg_time_calc.process(request_time)
 
             return result_json
 
