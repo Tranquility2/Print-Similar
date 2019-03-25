@@ -26,9 +26,9 @@ class FancyDictionary:
         :param str word:
         :rtype: list[str]
         """
-        search_item = self._sort_word(word)
-        result = self._data[search_item].copy()
-        result.remove(word)
+        search_item = self._sort_word(word)  # Sort to get a unique representation for all permutations
+        result = self._data[search_item].copy()  # Don't change the original data
+        result.remove(word)  # Remove the word that we asked about
 
         return result
 
