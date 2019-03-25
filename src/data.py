@@ -1,8 +1,20 @@
 import time
+
 from collections import defaultdict
+from dataclasses import dataclass, field
+from dataclasses_json import dataclass_json
+
+
+@dataclass_json
+@dataclass
+class SimilarResult:
+    similar: list = field(default_factory=list)
 
 
 class FancyDictionary:
+    """
+    TODO: add description
+    """
     def __init__(self, path, logger):
         """
         :param str path: path of source dictionary
@@ -23,13 +35,14 @@ class FancyDictionary:
         """
         Fetch a word from the DB
         :param str word:
-        :rtype: list[str]
+        :rtype: SimilarResult
         """
         search_item = self._sort_word(word)
         result = self._data[search_item].copy()
         result.remove(word)
+        similar_result = SimilarResult(similar=result)
 
-        return result
+        return similar_result
 
     def _load_data_file(self, path):
         """

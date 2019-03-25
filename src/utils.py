@@ -2,6 +2,9 @@ import threading
 
 
 class StreamingMovingAverage:
+    """
+    TODO: add description
+    """
     def __init__(self, window_size):
         self.moving_average_lock = threading.Lock()
         self.window_size = window_size
