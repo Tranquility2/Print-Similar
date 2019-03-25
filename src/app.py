@@ -3,7 +3,6 @@
 A small web service for printing similar words in the English language.
 """
 import json
-import sys
 import time
 import argparse
 import logging
@@ -20,8 +19,7 @@ __version__ = "1.0.0"
 # noinspection SpellCheckingInspection
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                    datefmt='%H:%M:%S',
-                    handlers=[logging.StreamHandler(sys.stdout)])
+                    datefmt='%H:%M:%S')
 
 
 class FancyDictionary:
