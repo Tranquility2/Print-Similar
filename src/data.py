@@ -12,9 +12,6 @@ class SimilarResult:
 
 
 class FancyDictionary:
-    """
-    TODO: add description
-    """
     def __init__(self, path, logger):
         """
         :param str path: path of source dictionary
@@ -31,7 +28,7 @@ class FancyDictionary:
         """
         return "".join((sorted(word)))
 
-    def check(self, word):
+    async def check(self, word):
         """
         Fetch a word from the DB
         :param str word:
