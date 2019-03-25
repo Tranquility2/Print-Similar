@@ -1,14 +1,6 @@
 import time
 
 from collections import defaultdict
-from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json
-
-
-@dataclass_json
-@dataclass
-class SimilarResult:
-    similar: list = field(default_factory=list)
 
 
 class FancyDictionary:
