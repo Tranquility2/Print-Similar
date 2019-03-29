@@ -28,7 +28,8 @@ class FancyDictionary:
         """
         search_item = self._sort_word(word)  # Sort to get a unique representation for all permutations
         result = self._data[search_item].copy()  # Don't change the original data
-        result.remove(word)  # Remove the word that we asked about
+        if result:
+            result.remove(word)  # Remove the word that we asked about
 
         return result
 
@@ -50,7 +51,7 @@ class FancyDictionary:
 
         end_time = time.time()
 
-        self.logger.info("DB loaded successfully (loaded in %.5fs)", end_time - start_time)
+        self.logger.info("DB loaded successfully (loaded in {:.5f}s)".format(end_time - start_time))
         self.logger.debug(f"Words count = {total_words}, "
                           f"DB Keys = {len(data.keys())}, "
                           f"DB Values = {sum([len(data[x]) for x in data if isinstance(data[x], list)])}")

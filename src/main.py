@@ -21,7 +21,7 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--debug", action="store_true", default=False, help="enable debug mode")
     parser.add_argument("-n", "--host", action="store", type=str, default="0.0.0.0", help="hostname to listen on")
     parser.add_argument("-p", "--port", action="store", type=int, default=8000, help="port of the webserver")
-    parser.add_argument("-f", "--file", action="store", type=str, default="words_clean.txt", help="source data file")
+    parser.add_argument("-f", "--file", action="store", type=str, default="../words_clean.txt", help="source data file")
     args = parser.parse_args()
 
     log = logging.getLogger(__name__)
