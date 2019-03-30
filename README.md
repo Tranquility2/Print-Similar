@@ -75,4 +75,4 @@ http://localhost:8000/api/v1/stats
 1. The input dictionary text file in not validated/sanitized
 1. Requests without a result will just return ```{"similar":[]}``` and not an error code
 (please make sure that the file only contains one word per line format)
-1. Flask-Cache should be introduced for enable caching (https://pythonhosted.org/Flask-Cache/)
+1. Flask-Cache should be introduced to enable caching (https://pythonhosted.org/Flask-Cache/)
