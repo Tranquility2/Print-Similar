@@ -3,7 +3,7 @@ import builtins
 
 from io import StringIO
 
-from src.data import FancyDictionary
+from code.data import FancyDictionary
 
 INPUT_DATA = ['word1', 'word2', 'word3', '1wrdo']
 EXPECTED_DATA = {'1dorw': ['word1', '1wrdo'], '2dorw': ['word2'], '3dorw': ['word3']}

@@ -4,7 +4,7 @@ A small web service for printing similar words in the English language.
 """
 import argparse
 
-from src.app import Server
+from code.app import Server
 from utils import config_logs
 
 __author__ = "Roy Moore"

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from quart import Quart, request, g, jsonify
 
-from src.data import FancyDictionary
+from code.data import FancyDictionary
 from utils import config_logs
 
 ROOT_URL = "/"

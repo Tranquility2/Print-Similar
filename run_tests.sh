@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-export PYTHONPATH="${PYTHONPATH}:./src"
+export PYTHONPATH="${PYTHONPATH}:./code"
 
-pytest -v src/
+pytest -v code/
