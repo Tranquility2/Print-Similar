@@ -1,4 +1,3 @@
-import logging
 import time
 
 from dataclasses import dataclass
@@ -6,8 +5,7 @@ from dataclasses_json import dataclass_json
 from quart import Quart, request, g, jsonify
 
 from src.data import FancyDictionary
-
-logging.getLogger()
+from utils import config_logs
 
 ROOT_URL = "/"
 BASE_URL = ROOT_URL + "api/"
@@ -28,12 +26,12 @@ class StatInfo:
 class Server:
     SAMPLE_WINDOW_SIZE = 10
 
-    def __init__(self, file, debug, host, port, logger):
+    def __init__(self, file, host, port, debug=False):
         self.debug = debug
         self.host = host
         self.port = port
-        self.logger = logger
-        self.db = FancyDictionary(file, logger)
+        self.logger = config_logs(__name__)
+        self.db = FancyDictionary(file, self.logger)
         self.stat_info = StatInfo(totalWords=self.db.total_words)
 
     def run(self):
@@ -80,7 +78,7 @@ class Server:
             # Note: changing to check object degrades performance x6
             result_dict['similar'] = await self.db.check(requested_word)
             request_time = int(g.request_time())
-            logging.debug(f"request time {request_time}ns")
+            self.logger.debug(f"request time {request_time}ns")
             self.stat_info.avgProcessingTimeNs = await update(request_time)
 
             return jsonify(result_dict)
@@ -91,7 +89,8 @@ class Server:
             Return general statistics
             :rtype: str
             """
-            self.stat_info.avgProcessingTimeNs = int(float(app.sum) / len(app.values))  # calculate average
+            if len(app.values):
+                self.stat_info.avgProcessingTimeNs = int(float(app.sum) / len(app.values))  # calculate average
 
             return self.stat_info.to_json()
 
