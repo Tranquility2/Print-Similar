@@ -5,7 +5,17 @@ Two words w_1 and w_2 are considered similar if w_1 is a letter permutation of w
 
 ## DB
 A DB of the English dictionary should be provided.  
-The service expects the DB (the txt file) to be in the local directory with the same name. 
+The service expects the DB (the txt file) to be in the local directory. 
+### Algorithm
+The data is stored in a simple dictionary structure where the key is the sorted permutation for a given word
+and the value is a list of words can are sorted to the same base permutation, for example:  
+```{'aelpp' : ["appl", "appel","pepla"]}```
+In the app startup process we build this data word by word from the given words file.  
+Method to find similar words:  
+1. sort the given input
+1. get the correlating values 
+1. remove the input word from the values
+1. return the remaining values 
 
 ## Web service API
 The web service listen on port 8000 and support the following two HTTP endpoints:
@@ -49,3 +59,9 @@ http://localhost:8000/api/v1/stats
 ```
 {"totalWords":351075,"totalRequests":9,"avgProcessingTimeNs":45239}
 ```
+
+## Notes/TODOs
+1. The input dictionary text file in not validated/sanitized
+1. Requests without a result will just return ```{"similar":[]}``` and not an error code
+(please make sure that the file only contains one word per line format)
+1. Flask-Cache should be introduced for enable caching (https://pythonhosted.org/Flask-Cache/)
