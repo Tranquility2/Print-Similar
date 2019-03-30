@@ -12,8 +12,7 @@ EXPECTED_DATA = {'1dorw': ['word1', '1wrdo'], '2dorw': ['word2'], '3dorw': ['wor
 @pytest.fixture
 def mock_open(monkeypatch):
     test_txt = StringIO("\n".join(INPUT_DATA))
-    m = lambda path, mode: test_txt
-    monkeypatch.setattr(builtins, 'open', m)
+    monkeypatch.setattr(builtins, 'open', lambda path, mode: test_txt)
 
 
 class MockLogging:
