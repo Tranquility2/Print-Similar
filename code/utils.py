@@ -1,3 +1,6 @@
+"""
+Utils for Print Similar web service
+"""
 import logging
 
 

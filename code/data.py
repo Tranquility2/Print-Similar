@@ -1,3 +1,6 @@
+"""
+Data handling for Print Similar web service
+"""
 import time
 
 from collections import defaultdict

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-A small web service for printing similar words in the English language.
+Runnable server for Print Similar web service
 """
 import argparse
 

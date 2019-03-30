@@ -1,3 +1,6 @@
+"""
+Print Similar - Web service for printing similar words in the English language.
+"""
 import time
 
 from dataclasses import dataclass
