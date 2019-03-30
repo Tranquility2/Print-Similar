@@ -26,15 +26,12 @@ class StatInfo:
 class Server:
     SAMPLE_WINDOW_SIZE = 10
 
-    def __init__(self, file, host, port, debug=False):
-        self.debug = debug
-        self.host = host
-        self.port = port
+    def __init__(self, datafile):
         self.logger = config_logs(__name__)
-        self.db = FancyDictionary(file, self.logger)
+        self.db = FancyDictionary(datafile, self.logger)
         self.stat_info = StatInfo(totalWords=self.db.total_words)
 
-    def run(self):
+    def get_app(self):
         app = Quart(__name__)
         # Moving average parameters
         app.window_size = self.SAMPLE_WINDOW_SIZE
@@ -94,4 +91,4 @@ class Server:
 
             return self.stat_info.to_json()
 
-        app.run(debug=self.debug, host=self.host, port=self.port)
+        return app
