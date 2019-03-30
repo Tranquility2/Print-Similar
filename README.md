@@ -3,9 +3,17 @@ A small web service for printing similar words in the English language.
 
 Two words w_1 and w_2 are considered similar if w_1 is a letter permutation of w_2 (e.g., "stressed" and "desserts"). 
 
+## How To Use
+As Docker is used to simplify and ease the use of this web service, please make sure you have Docker installed:
+https://docs.docker.com/install/linux/docker-ce/ubuntu/
+### build
+```sudo docker build -t print-similar .```
+### run
+```sudo docker run -p 8000:8000/tcp -it print-similar```
+
 ## DB
 A DB of the English dictionary should be provided.  
-The service expects the DB (the txt file) to be in the local directory. 
+The service expects the DB ("words_clean.txt" text file) to be in the local directory. 
 ### Algorithm
 The data is stored in a simple dictionary structure where the key is the sorted permutation for a given word
 and the value is a list of words can are sorted to the same base permutation, for example:  
@@ -59,6 +67,9 @@ http://localhost:8000/api/v1/stats
 ```
 {"totalWords":351075,"totalRequests":9,"avgProcessingTimeNs":45239}
 ```
+
+## Overview
+![Overview](docs/diag.png)
 
 ## Notes/TODOs
 1. The input dictionary text file in not validated/sanitized
