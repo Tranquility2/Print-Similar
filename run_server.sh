@@ -2,4 +2,4 @@
 
 export PYTHONPATH="${PYTHONPATH}:./code"
 
-hypercorn server:app -b 0.0.0.0:8000
+hypercorn server:app -b 0.0.0.0:80
