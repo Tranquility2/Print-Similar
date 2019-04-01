@@ -3,3 +3,4 @@ dataclasses==0.6
 dataclasses-json==0.2.2
 Quart==0.6.12
 gunicorn==19.9.0
+pymongo==3.7.2

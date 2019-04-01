@@ -1,12 +1,13 @@
 FROM ubuntu:18.04
 MAINTAINER roy@moore.co.il
 
-# Install Nginx
-RUN apt update && apt install nginx python3 python3-pip -y
+# Install packages
+RUN apt update && apt install nginx mongodb python3 python3-pip -y
 
 # Copy code
 COPY . /code
 WORKDIR /code
+
 # Update nginx conf
 COPY conf/print_similar.conf /etc/nginx/conf.d/print_similar.conf
 # Remove nginx default conf
