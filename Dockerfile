@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-MAINTAINER roy@moore.co.il
+MAINTAINER roy
 
 # Install packages
 RUN apt update && apt install nginx mongodb python3 python3-pip -y
